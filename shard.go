@@ -30,7 +30,7 @@ func (s *shard[K, V]) set(h uint64, k K, v V) bool {
 	return s.set0(h, k, v)
 }
 
-func (s *shard[K, V]) delete(h uint64, k K) {
+func (s *shard[K, V]) del(h uint64, k K) {
 	var dist uint32
 
 	s.Lock()
@@ -63,7 +63,7 @@ func (s *shard[K, V]) delete(h uint64, k K) {
 	}
 }
 
-func (s *shard[K, V]) Len() int {
+func (s *shard[K, V]) len() int {
 	s.RLock()
 	defer s.RUnlock()
 	return int(s.count)

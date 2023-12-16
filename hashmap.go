@@ -6,6 +6,7 @@ import (
 	"github.com/dolthub/maphash"
 )
 
+// Map is a concurrent hash map with generics.
 func New[K comparable, V any](cap int) *Map[K, V] {
 	var mp Map[K, V]
 
@@ -22,15 +23,17 @@ func New[K comparable, V any](cap int) *Map[K, V] {
 	return &mp
 }
 
+// return the count of key-value in the map.
 func (mp *Map[K, V]) Len() int {
 	var count int
 
 	for i := range mp.shards {
-		count += mp.shards[i].Len()
+		count += mp.shards[i].len()
 	}
 	return count
 }
 
+// set the value for a key.
 func (mp *Map[K, V]) Set(k K, v V) {
 	var s *shard[K, V]
 
@@ -39,6 +42,7 @@ func (mp *Map[K, V]) Set(k K, v V) {
 	s.set(h, k, v)
 }
 
+// return the value for a key. the ok result indicates whether k is in the map.
 func (mp *Map[K, V]) Get(k K) (V, bool) {
 	var s *shard[K, V]
 
@@ -47,10 +51,11 @@ func (mp *Map[K, V]) Get(k K) (V, bool) {
 	return s.get(h, k)
 }
 
-func (mp *Map[K, V]) Delete(k K) {
+// delete the value for a key.
+func (mp *Map[K, V]) Del(k K) {
 	var s *shard[K, V]
 
 	h := mp.hasher.Hash(k)
 	s = &mp.shards[h%uint64(len(mp.shards))]
-	s.delete(h, k)
+	s.del(h, k)
 }

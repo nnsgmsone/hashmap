@@ -34,7 +34,7 @@ func TestHashmap(t *testing.T) {
 		require.Equal(t, i, v)
 	}
 	// test Delete
-	m.Delete(0)
+	m.Del(0)
 	_, ok := m.Get(0)
 	require.Equal(t, false, ok)
 }
